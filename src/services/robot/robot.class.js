@@ -1,14 +1,16 @@
 /* eslint-disable no-unused-vars */
-import Robot from '../../robot/Robot.js';
 
 class Service {
   constructor (options) {
     this.options = options || {};
-    this.robot = new Robot();
+    this.robot = options.robot;
   }
 
   async find (params) {
-    return [];
+    const {legs, sensors, gait} = this.robot;
+    const {movements, ...others} = gait; // hide some internals
+    const {x, y, rz} = sensors;
+    return {legs, sensors: {x, y, rz}};
   }
 
   async get (id, params) {

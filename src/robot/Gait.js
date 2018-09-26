@@ -1,54 +1,50 @@
+import {EventEmitter} from 'events';
 
 const noop = ()=>{};
 
-class Movement {
-	constructor(func = noop, options = {onComplete: noop}) {
+class Movement extends EventEmitter {
+	constructor(func = noop, params) {
+		super();
 		this.func = func;
-		this.onComplete = options.onComplete;
+		this.params = params;
 	}
 	async start() {
-		const result = await this.func();
-		this.onComplete();
+		console.log("Strarting ", this.func, this.params)
+		const result = await this.func(this.params);
+		this.emit('completed', this);
 		return result;
 	}
 }
 
-class ComplexMovement {
-	constructor(movements = [], options = {start: false, onComplete: noop, onStop: noop}) {
+class ComplexMovement extends EventEmitter {
+	constructor(movements = [], params, options = {start: false}) {
+		super();
 		this.movements = movements; // expects array of Movements
-		this.onComplete = options.onComplete;
+		this.params = params
 		if(options.start) { 
-			this.start();
+			this.start(this.params);
 		}
 	}
-	async start() {
-		console.log("Starting:", this);
+	async start(params) {
+		this.emit("started:", this);
 		for (const movement of this.movements) {
+			console.log("Starting: ", movement)
 			await movement.start();
 		}
-		this.onComplete();
+
+		this.emit('completed', this);
 	}	
 }
 
 class ForwardStep extends ComplexMovement {
-	constructor(leg, options) {
-		super([new Movement(async function() {
-			await leg.push('up'); //up
-			console.log(leg);
-
-			await leg.rotate(30); // + forward, -back
-			console.log(leg);
-
-			await leg.push('down');
-			console.log(leg);
-
-			await leg.rotate(-30);
-			console.log(leg);
-
-
-		})], options)
+	constructor(leg, params, options) {
+		super([
+			new Movement(leg.push, 'up', options), 
+			new Movement(leg.rotate, 30, options), // + forward, -back
+			new Movement(leg.push, 'down', options),
+			new Movement(leg.rotate, -30, options)
+		], options)
 		this.leg = leg;
-		console.log("\n\nCreated: ", this)
 	}	
 }
 
@@ -56,7 +52,7 @@ export { Movement, ComplexMovement, ForwardStep }
 
 export default class Gait extends ComplexMovement {
 	constructor(legs = [], options = {movements: [], ...rest}) {
-		super(options.movements, options);
+		super(options.movements, options.rest);
 		this.legs = legs;
 		console.log("Created:", this);
 	}

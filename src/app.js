@@ -1,3 +1,5 @@
+import Robot from './robot/Robot.js';
+
 const path = require('path');
 const favicon = require('serve-favicon');
 const compress = require('compression');
@@ -21,6 +23,9 @@ const app = express(feathers());
 // Load app configuration
 app.configure(configuration());
 // Enable security, CORS, compression, favicon and body parsing
+
+app.set("robot", new Robot());
+
 app.use(helmet());
 app.use(cors());
 app.use(compress());

@@ -1,20 +1,14 @@
 // Initializes the `sensors` service on path `/sensors`
-const createService = require('./sensors.class.js');
-const hooks = require('./sensors.hooks');
 
 module.exports = function (app) {
   
-  const paginate = app.get('paginate');
-
-  const options = {
-    paginate
-  };
+  const robot = app.get('robot');
 
   // Initialize our service with any options it requires
-  app.use('/sensors', createService(options));
+  app.use('/sensors', { async get() { const {x, y, rz} = robot.sensors; return {x, y, rz}; } });
 
   // Get our initialized service so that we can register hooks
   const service = app.service('sensors');
 
-  service.hooks(hooks);
+  // service.hooks(hooks);
 };

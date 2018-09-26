@@ -9,8 +9,10 @@ export default class Robot {
 			this.legs.push(new Leg(i));
 		}
 		this.sensors = new Sensors();
-		this.gait = new Gait(this.legs, {onComplete: ()=>{console.log("---------------Completed. ", this.gait)}});
+		this.gait = new Gait(this.legs, {});
+		this.gait.on('completed', (which) => console.log("Gait completed", this.legs));
 		const step1 = new ForwardStep(this.legs[0]);
+		step1.on('completed', s => console.log("Step completed", this.legs[0]));
 		this.gait.movements.push(step1);
 
 		this.gait.movements.push(new ForwardStep(this.legs[2]));
@@ -27,4 +29,5 @@ export default class Robot {
 
 		this.gait.start();
 	}
+	
 }
