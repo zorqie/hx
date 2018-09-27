@@ -5,8 +5,8 @@ export default class Sensors {
 		this.x = value.x;
 		this.y = value.y;
 		this.rz = value.rz;
-		const {x,y,rz} = this
-		console.log("Sensors -> ", {x,y,rz});
+		const {x, y, rz} = this;
+		console.log("Sensors -> ", {x, y, rz});
 	}
 	set x(val) {
 		this._x = val + Math.random() * this.d.x;

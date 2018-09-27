@@ -7,14 +7,14 @@ export default class Leg {
 	}
 
 	async rotate(angle) {
-		const time = Math.abs(this.angle - angle) * 50
+		const time = Math.abs(this.angle - angle) * 25
 		await new Promise(resolve => setTimeout(resolve, time));
 		this.angle = angle; 
 		return this.angle;
 	}
 
 	async push(position) {
-		const time = this.position==position ? 0 : 1000;
+		const time = this.position==position ? 10 : 1000;
 		await new Promise(resolve => setTimeout(resolve, time))
 		this.position = position;	
 		return this.position;

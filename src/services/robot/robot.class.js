@@ -23,11 +23,19 @@ class Service {
     if (Array.isArray(data)) {
       return Promise.all(data.map(current => this.create(current, params)));
     }
+    const { command } = data;
+    switch(command) {
+      case 'start': 
+        this.robot.start();
+        break;
 
+    }
     return data;
   }
 
   async update (id, data, params) {
+    console.log("UPDATING: ", data);
+    this.emit('updated', data);
     return data;
   }
 
